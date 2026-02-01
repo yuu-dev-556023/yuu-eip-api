@@ -1,0 +1,69 @@
+<abp-page [title]="'人資管理 / 出勤管理'">
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <label class="form-label">部門</label>
+          <select class="form-select" [(ngModel)]="departmentFilter" (change)="loadAttendance()">
+            <option [ngValue]="null">全部部門</option>
+            @for (dept of departments; track dept.id) {
+              <option [ngValue]="dept.id">{{ dept.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">開始日期</label>
+          <input type="date" class="form-control" [(ngModel)]="dateFrom" (change)="loadAttendance()" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">結束日期</label>
+          <input type="date" class="form-control" [(ngModel)]="dateTo" (change)="loadAttendance()" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">狀態</label>
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="loadAttendance()">
+            <option [ngValue]="null">全部狀態</option>
+            <option [ngValue]="AttendanceStatus.Normal">正常</option>
+            <option [ngValue]="AttendanceStatus.Late">遲到</option>
+            <option [ngValue]="AttendanceStatus.EarlyLeave">早退</option>
+            <option [ngValue]="AttendanceStatus.Absent">曠職</option>
+            <option [ngValue]="AttendanceStatus.OnLeave">請假</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>員工</th>
+            <th>日期</th>
+            <th>上班打卡</th>
+            <th>下班打卡</th>
+            <th>工作時數</th>
+            <th>加班時數</th>
+            <th>狀態</th>
+            <th>備註</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (record of attendanceRecords; track record.id) {
+            <tr>
+              <td>{{ record.employeeName }} ({{ record.employeeNo }})</td>
+              <td>{{ record.date | date:'yyyy-MM-dd' }}</td>
+              <td>{{ record.clockIn | date:'HH:mm' }}</td>
+              <td>{{ record.clockOut | date:'HH:mm' }}</td>
+              <td>{{ record.workHours | number:'1.1-1' }}</td>
+              <td>{{ record.overtimeHours | number:'1.1-1' }}</td>
+              <td>
+                <span [class]="getStatusBadgeClass(record.status!)">
+                  {{ getStatusText(record.status!) }}
+                </span>
+              </td>
+              <td>{{ record.note || '-' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</abp-page>

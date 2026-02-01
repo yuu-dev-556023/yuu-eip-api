@@ -1,0 +1,90 @@
+<abp-page [title]="'人資管理 / 職位管理'">
+  <abp-page-toolbar-container>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="fa fa-plus me-1"></i> 新增職位
+    </button>
+  </abp-page-toolbar-container>
+
+  <div class="card">
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>職位代碼</th>
+            <th>職位名稱</th>
+            <th>職等</th>
+            <th>底薪</th>
+            <th>狀態</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (position of positions; track position.id) {
+            <tr>
+              <td>{{ position.code }}</td>
+              <td>{{ position.name }}</td>
+              <td>{{ position.level }}</td>
+              <td>{{ position.baseSalary | number }}</td>
+              <td>
+                <span [class]="position.isActive ? 'badge bg-success' : 'badge bg-secondary'">
+                  {{ position.isActive ? '啟用' : '停用' }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary me-1" (click)="openEditModal(position)">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="delete(position)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  @if (isModalOpen) {
+    <div class="modal show d-block" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ selectedPosition ? '編輯職位' : '新增職位' }}</h5>
+            <button type="button" class="btn-close" (click)="closeModal()"></button>
+          </div>
+          <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">職位代碼 *</label>
+                <input type="text" class="form-control" formControlName="code" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">職位名稱 *</label>
+                <input type="text" class="form-control" formControlName="name" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">職等 *</label>
+                <input type="number" class="form-control" formControlName="level" min="1" max="100" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">底薪 *</label>
+                <input type="number" class="form-control" formControlName="baseSalary" min="0" />
+              </div>
+              <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" formControlName="isActive" id="isActive" />
+                <label class="form-check-label" for="isActive">啟用</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">取消</button>
+              <button type="submit" class="btn btn-primary" [disabled]="form.invalid">儲存</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+  }
+</abp-page>

@@ -1,0 +1,188 @@
+<abp-page [title]="'人資管理 / 薪資管理'">
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-2">
+          <label class="form-label">年</label>
+          <select class="form-select" [(ngModel)]="yearFilter" (change)="loadSalaries()">
+            @for (y of years; track y) {
+              <option [ngValue]="y">{{ y }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">月</label>
+          <select class="form-select" [(ngModel)]="monthFilter" (change)="loadSalaries()">
+            <option [ngValue]="null">全部</option>
+            @for (m of months; track m) {
+              <option [ngValue]="m">{{ m }}月</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">部門</label>
+          <select class="form-select" [(ngModel)]="departmentFilter" (change)="loadSalaries()">
+            <option [ngValue]="null">全部部門</option>
+            @for (dept of departments; track dept.id) {
+              <option [ngValue]="dept.id">{{ dept.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">狀態</label>
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="loadSalaries()">
+            <option [ngValue]="null">全部狀態</option>
+            <option [ngValue]="SalaryStatus.Pending">待核算</option>
+            <option [ngValue]="SalaryStatus.Confirmed">已確認</option>
+            <option [ngValue]="SalaryStatus.Paid">已發放</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th>員工</th>
+            <th>年/月</th>
+            <th class="text-end">底薪</th>
+            <th class="text-end">加班費</th>
+            <th class="text-end">獎金</th>
+            <th class="text-end">扣款</th>
+            <th class="text-end">勞保</th>
+            <th class="text-end">健保</th>
+            <th class="text-end">實發</th>
+            <th>狀態</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (record of salaryRecords; track record.id) {
+            <tr>
+              <td>{{ record.employeeName }}</td>
+              <td>{{ record.year }}/{{ record.month }}</td>
+              <td class="text-end">{{ record.baseSalary | number }}</td>
+              <td class="text-end">{{ record.overtimePay | number }}</td>
+              <td class="text-end">{{ record.bonus | number }}</td>
+              <td class="text-end text-danger">{{ record.deductions | number }}</td>
+              <td class="text-end text-danger">{{ record.laborInsurance | number }}</td>
+              <td class="text-end text-danger">{{ record.healthInsurance | number }}</td>
+              <td class="text-end fw-bold">{{ record.netSalary | number }}</td>
+              <td>
+                <span [class]="getStatusBadgeClass(record.status!)">
+                  {{ getStatusText(record.status!) }}
+                </span>
+              </td>
+              <td>
+                @if (record.status === SalaryStatus.Pending) {
+                  <button class="btn btn-sm btn-success me-1" (click)="confirm(record)" title="確認">
+                    <i class="fa fa-check"></i>
+                  </button>
+                }
+                @if (record.status === SalaryStatus.Confirmed) {
+                  <button class="btn btn-sm btn-primary me-1" (click)="markAsPaid(record)" title="標記已發放">
+                    <i class="fa fa-money-bill"></i>
+                  </button>
+                }
+                <button class="btn btn-sm btn-outline-info" (click)="viewSlip(record)" title="查看薪資單">
+                  <i class="fa fa-file-alt"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Salary Slip Modal -->
+  @if (isSlipModalOpen && selectedSlip) {
+    <div class="modal show d-block" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">薪資單</h5>
+            <button type="button" class="btn-close" (click)="closeSlipModal()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <p><strong>員工：</strong>{{ selectedSlip.employeeName }} ({{ selectedSlip.employeeNo }})</p>
+                <p><strong>部門：</strong>{{ selectedSlip.departmentName }}</p>
+                <p><strong>職位：</strong>{{ selectedSlip.positionName }}</p>
+              </div>
+              <div class="col-md-6 text-end">
+                <h4>{{ selectedSlip.year }}年{{ selectedSlip.month }}月 薪資單</h4>
+              </div>
+            </div>
+
+            <table class="table table-bordered">
+              <tbody>
+                <tr class="table-primary">
+                  <th colspan="2">收入項目</th>
+                  <th class="text-end">金額</th>
+                </tr>
+                <tr>
+                  <td colspan="2">底薪</td>
+                  <td class="text-end">{{ selectedSlip.baseSalary | number }}</td>
+                </tr>
+                <tr>
+                  <td colspan="2">加班費</td>
+                  <td class="text-end">{{ selectedSlip.overtimePay | number }}</td>
+                </tr>
+                <tr>
+                  <td colspan="2">獎金</td>
+                  <td class="text-end">{{ selectedSlip.bonus | number }}</td>
+                </tr>
+                <tr class="table-secondary">
+                  <th colspan="2">收入小計</th>
+                  <th class="text-end">{{ selectedSlip.grossIncome | number }}</th>
+                </tr>
+
+                <tr class="table-danger">
+                  <th colspan="2">扣款項目</th>
+                  <th class="text-end">金額</th>
+                </tr>
+                <tr>
+                  <td colspan="2">扣款 (遲到/曠職等)</td>
+                  <td class="text-end">{{ selectedSlip.deductions | number }}</td>
+                </tr>
+                <tr>
+                  <td colspan="2">勞保</td>
+                  <td class="text-end">{{ selectedSlip.laborInsurance | number }}</td>
+                </tr>
+                <tr>
+                  <td colspan="2">健保</td>
+                  <td class="text-end">{{ selectedSlip.healthInsurance | number }}</td>
+                </tr>
+                <tr class="table-secondary">
+                  <th colspan="2">扣款小計</th>
+                  <th class="text-end">{{ selectedSlip.totalDeductions | number }}</th>
+                </tr>
+
+                <tr class="table-success fs-5">
+                  <th colspan="2">實發金額</th>
+                  <th class="text-end">{{ selectedSlip.netSalary | number }}</th>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="mt-4">
+              <h6>出勤資訊</h6>
+              <p>
+                出勤天數：{{ selectedSlip.workDays }} 天 |
+                工作時數：{{ selectedSlip.totalWorkHours | number:'1.1-1' }} 小時 |
+                加班時數：{{ selectedSlip.totalOvertimeHours | number:'1.1-1' }} 小時 |
+                遲到天數：{{ selectedSlip.lateDays }} 天 |
+                請假天數：{{ selectedSlip.leaveDays }} 天
+              </p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeSlipModal()">關閉</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+  }
+</abp-page>

@@ -1,0 +1,48 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".dockerignore" />
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path=".prettierrc" />
+    <File Path="common.props" />
+    <File Path="Yuu.Eip.sln.DotSettings" />
+    <File Path="Directory.Packages.props" />
+    <File Path="Dockerfile" />
+    <File Path="NuGet.Config" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Yuu.Eip.Application.Contracts/Yuu.Eip.Application.Contracts.csproj" />
+    <Project Path="src/Yuu.Eip.Application/Yuu.Eip.Application.csproj" />
+
+
+
+
+
+
+
+
+
+    <Project Path="src/Yuu.Eip.DbMigrator/Yuu.Eip.DbMigrator.csproj" />
+    <Project Path="src/Yuu.Eip.Domain.Shared/Yuu.Eip.Domain.Shared.csproj" />
+    <Project Path="src/Yuu.Eip.Domain/Yuu.Eip.Domain.csproj" />
+    <Project Path="src/Yuu.Eip.EntityFrameworkCore/Yuu.Eip.EntityFrameworkCore.csproj" />
+    <Project Path="src/Yuu.Eip.HttpApi.Client/Yuu.Eip.HttpApi.Client.csproj" />
+
+    <Project Path="src/Yuu.Eip.HttpApi.Host/Yuu.Eip.HttpApi.Host.csproj" />
+    <Project Path="src/Yuu.Eip.HttpApi/Yuu.Eip.HttpApi.csproj" />
+
+
+
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Yuu.Eip.Application.Tests/Yuu.Eip.Application.Tests.csproj" />
+    <Project Path="test/Yuu.Eip.Domain.Tests/Yuu.Eip.Domain.Tests.csproj" />
+    <Project Path="test/Yuu.Eip.EntityFrameworkCore.Tests/Yuu.Eip.EntityFrameworkCore.Tests.csproj" />
+    <Project Path="test/Yuu.Eip.HttpApi.Client.ConsoleTestApp/Yuu.Eip.HttpApi.Client.ConsoleTestApp.csproj" />
+
+    <Project Path="test/Yuu.Eip.TestBase/Yuu.Eip.TestBase.csproj" />
+
+  </Folder>
+</Solution>

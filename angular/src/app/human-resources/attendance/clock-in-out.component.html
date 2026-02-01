@@ -1,0 +1,76 @@
+<abp-page [title]="'人資管理 / 打卡'">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body text-center">
+          <h2 class="mb-4">{{ currentTime | date:'yyyy-MM-dd HH:mm:ss' }}</h2>
+
+          @if (todayRecord) {
+            <div class="mb-4">
+              <div class="row">
+                <div class="col-6">
+                  <div class="card bg-light">
+                    <div class="card-body">
+                      <h6 class="text-muted">上班打卡</h6>
+                      <h4>{{ todayRecord.clockIn | date:'HH:mm:ss' : '' : '-' }}</h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="card bg-light">
+                    <div class="card-body">
+                      <h6 class="text-muted">下班打卡</h6>
+                      <h4>{{ todayRecord.clockOut | date:'HH:mm:ss' : '' : '-' }}</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <span [class]="getStatusBadgeClass(todayRecord.status!)" class="fs-5">
+                {{ getStatusText(todayRecord.status!) }}
+              </span>
+            </div>
+          } @else {
+            <div class="mb-4">
+              <p class="text-muted">今日尚未打卡</p>
+            </div>
+          }
+
+          <div class="mb-3">
+            <textarea
+              class="form-control"
+              placeholder="備註 (選填)"
+              [(ngModel)]="note"
+              rows="2"
+            ></textarea>
+          </div>
+
+          <div class="d-grid gap-2">
+            @if (!todayRecord || !todayRecord.clockIn) {
+              <button class="btn btn-success btn-lg" (click)="clockIn()" [disabled]="loading">
+                <i class="fa fa-sign-in-alt me-2"></i>
+                {{ loading ? '處理中...' : '上班打卡' }}
+              </button>
+            }
+
+            @if (todayRecord && todayRecord.clockIn && !todayRecord.clockOut) {
+              <button class="btn btn-danger btn-lg" (click)="clockOut()" [disabled]="loading">
+                <i class="fa fa-sign-out-alt me-2"></i>
+                {{ loading ? '處理中...' : '下班打卡' }}
+              </button>
+            }
+
+            @if (todayRecord && todayRecord.clockOut) {
+              <div class="alert alert-success">
+                <i class="fa fa-check-circle me-2"></i>
+                今日已完成打卡，工作時數：{{ todayRecord.workHours | number:'1.1-1' }} 小時
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</abp-page>

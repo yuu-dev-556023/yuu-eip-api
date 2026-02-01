@@ -1,0 +1,155 @@
+<Project>
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <CentralPackageVersionOverrideEnabled>true</CentralPackageVersionOverrideEnabled>
+    <!-- Do not warn for missing source mappings -->
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
+  </PropertyGroup>
+
+  <!-- ============================================================================= -->
+  <!-- Source Projects (src/)                                                       -->
+  <!-- ============================================================================= -->
+
+  <ItemGroup Label="Yuu.Eip.Application">
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="0.6.0-preview.1" />
+    <PackageVersion Include="Volo.Abp.Account.Application" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Identity.Application" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.PermissionManagement.Application" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.TenantManagement.Application" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.FeatureManagement.Application" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.Application" Version="10.0.2" />
+    <PackageVersion Include="Yuu.ClientInfo.Provider.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Yuu.Environment.Provider.Abstractions" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.Application.Contracts">
+    <PackageVersion Include="Volo.Abp.ObjectExtending" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Account.Application.Contracts" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Identity.Application.Contracts" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.PermissionManagement.Application.Contracts" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.TenantManagement.Application.Contracts" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.FeatureManagement.Application.Contracts" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.Application.Contracts" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.DbMigrator">
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
+    <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Autofac" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.Domain">
+    <PackageVersion Include="Volo.Abp.Emailing" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Identity.Domain" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs.Domain" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.AuditLogging.Domain" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.TenantManagement.Domain" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.FeatureManagement.Domain" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.Domain" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.OpenIddict.Domain" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.PermissionManagement.Domain.OpenIddict" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.Domain.Shared">
+    <PackageVersion Include="Volo.Abp.Identity.Domain.Shared" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs.Domain.Shared" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.AuditLogging.Domain.Shared" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.TenantManagement.Domain.Shared" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.FeatureManagement.Domain.Shared" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.PermissionManagement.Domain.Shared" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.Domain.Shared" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.OpenIddict.Domain.Shared" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.EntityFrameworkCore">
+    <PackageVersion Include="EFCore.CheckConstraints" Version="10.0.0" />
+    <PackageVersion Include="Volo.Abp.EntityFrameworkCore.PostgreSql" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.PermissionManagement.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Identity.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.AuditLogging.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.TenantManagement.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.FeatureManagement.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.OpenIddict.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2" />
+    <PackageVersion Include="Yuu.Abp.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Yuu.EntityFrameworkCore.Logging" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.HttpApi">
+    <PackageVersion Include="Volo.Abp.Account.HttpApi" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Identity.HttpApi" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.PermissionManagement.HttpApi" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.TenantManagement.HttpApi" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.FeatureManagement.HttpApi" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.HttpApi" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.HttpApi.Client">
+    <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.6" />
+    <PackageVersion Include="Volo.Abp.Http.Client.IdentityModel" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Account.HttpApi.Client" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Identity.HttpApi.Client" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.PermissionManagement.HttpApi.Client" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.TenantManagement.HttpApi.Client" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.FeatureManagement.HttpApi.Client" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.SettingManagement.HttpApi.Client" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.HttpApi.Host">
+    <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Exceptions" Version="8.4.0" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.MultiTenancy" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.Serilog" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Swashbuckle" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Account.Web.OpenIddict" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite" Version="5.0.2" />
+    <PackageVersion Include="Yuu.AspNetCore.Hosting" Version="10.0.2" />
+    <PackageVersion Include="Yuu.AspNetCore.Middleware" Version="10.0.3" />
+    <PackageVersion Include="Yuu.AspNetCore.Mvc" Version="10.0.1" />
+    <PackageVersion Include="Yuu.ClientInfo.Provider" Version="10.0.2" />
+    <PackageVersion Include="Yuu.Environment.Provider" Version="10.0.2" />
+    <PackageVersion Include="Yuu.Serilog.Seq" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
+  </ItemGroup>
+
+  <!-- ============================================================================= -->
+  <!-- Test Projects (test/)                                                         -->
+  <!-- ============================================================================= -->
+
+  <ItemGroup Label="Yuu.Eip.Application.Tests">
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.Domain.Tests">
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.EntityFrameworkCore.Tests">
+    <PackageVersion Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.HttpApi.Client.ConsoleTestApp">
+    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu.Eip.TestBase">
+    <PackageVersion Include="Volo.Abp.TestBase" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.Authorization" Version="10.0.2" />
+    <PackageVersion Include="Volo.Abp.BackgroundJobs.Abstractions" Version="10.0.2" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.extensibility.execution" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+  </ItemGroup>
+
+</Project>

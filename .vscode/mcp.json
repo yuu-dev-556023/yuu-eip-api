@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"yuu-eip-mcp": {
+			"url": "https://yuu-cloud-mcp.yuu-is87.com/mcp",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}

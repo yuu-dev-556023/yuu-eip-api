@@ -1,0 +1,186 @@
+<abp-page [title]="'人資管理 / 請假管理'">
+  <abp-page-toolbar-container>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="fa fa-plus me-1"></i> 新增請假
+    </button>
+  </abp-page-toolbar-container>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="loadLeaveRequests()">
+            <option [ngValue]="null">全部狀態</option>
+            <option [ngValue]="LeaveRequestStatus.Pending">待審核</option>
+            <option [ngValue]="LeaveRequestStatus.Approved">已核准</option>
+            <option [ngValue]="LeaveRequestStatus.Rejected">已駁回</option>
+            <option [ngValue]="LeaveRequestStatus.Cancelled">已取消</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="leaveTypeFilter" (change)="loadLeaveRequests()">
+            <option [ngValue]="null">全部假別</option>
+            <option [ngValue]="LeaveType.Annual">特休</option>
+            <option [ngValue]="LeaveType.Sick">病假</option>
+            <option [ngValue]="LeaveType.Personal">事假</option>
+            <option [ngValue]="LeaveType.Maternity">產假</option>
+            <option [ngValue]="LeaveType.Paternity">陪產假</option>
+            <option [ngValue]="LeaveType.Unpaid">無薪假</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>員工</th>
+            <th>假別</th>
+            <th>開始日期</th>
+            <th>結束日期</th>
+            <th>時數</th>
+            <th>事由</th>
+            <th>狀態</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (request of leaveRequests; track request.id) {
+            <tr>
+              <td>{{ request.employeeName }} ({{ request.employeeNo }})</td>
+              <td>{{ getLeaveTypeText(request.leaveType!) }}</td>
+              <td>{{ request.startDate | date:'yyyy-MM-dd' }}</td>
+              <td>{{ request.endDate | date:'yyyy-MM-dd' }}</td>
+              <td>{{ request.hours }}</td>
+              <td>{{ request.reason || '-' }}</td>
+              <td>
+                <span [class]="getStatusBadgeClass(request.status!)">
+                  {{ getStatusText(request.status!) }}
+                </span>
+              </td>
+              <td>
+                @if (request.status === LeaveRequestStatus.Pending) {
+                  <button class="btn btn-sm btn-success me-1" (click)="approve(request)" title="核准">
+                    <i class="fa fa-check"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger me-1" (click)="reject(request)" title="駁回">
+                    <i class="fa fa-times"></i>
+                  </button>
+                }
+                <button class="btn btn-sm btn-outline-info" (click)="viewDetail(request)" title="檢視">
+                  <i class="fa fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Create Modal -->
+  @if (isModalOpen) {
+    <div class="modal show d-block" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">新增請假</h5>
+            <button type="button" class="btn-close" (click)="closeModal()"></button>
+          </div>
+          <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">員工 *</label>
+                <select class="form-select" formControlName="employeeId">
+                  <option [ngValue]="null" disabled>請選擇</option>
+                  @for (emp of employees; track emp.id) {
+                    <option [ngValue]="emp.id">{{ emp.name }} ({{ emp.employeeNo }})</option>
+                  }
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">假別 *</label>
+                <select class="form-select" formControlName="leaveType">
+                  <option [ngValue]="LeaveType.Annual">特休</option>
+                  <option [ngValue]="LeaveType.Sick">病假</option>
+                  <option [ngValue]="LeaveType.Personal">事假</option>
+                  <option [ngValue]="LeaveType.Maternity">產假</option>
+                  <option [ngValue]="LeaveType.Paternity">陪產假</option>
+                  <option [ngValue]="LeaveType.Unpaid">無薪假</option>
+                </select>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">開始日期 *</label>
+                  <input type="date" class="form-control" formControlName="startDate" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">結束日期 *</label>
+                  <input type="date" class="form-control" formControlName="endDate" />
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">時數 *</label>
+                <input type="number" class="form-control" formControlName="hours" min="0.5" step="0.5" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">事由</label>
+                <textarea class="form-control" formControlName="reason" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">取消</button>
+              <button type="submit" class="btn btn-primary" [disabled]="form.invalid">送出</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+  }
+
+  <!-- Detail Modal -->
+  @if (isDetailModalOpen && selectedRequest) {
+    <div class="modal show d-block" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">請假詳情</h5>
+            <button type="button" class="btn-close" (click)="closeDetailModal()"></button>
+          </div>
+          <div class="modal-body">
+            <dl class="row">
+              <dt class="col-sm-4">員工</dt>
+              <dd class="col-sm-8">{{ selectedRequest.employeeName }}</dd>
+              <dt class="col-sm-4">假別</dt>
+              <dd class="col-sm-8">{{ getLeaveTypeText(selectedRequest.leaveType!) }}</dd>
+              <dt class="col-sm-4">期間</dt>
+              <dd class="col-sm-8">{{ selectedRequest.startDate | date:'yyyy-MM-dd' }} ~ {{ selectedRequest.endDate | date:'yyyy-MM-dd' }}</dd>
+              <dt class="col-sm-4">時數</dt>
+              <dd class="col-sm-8">{{ selectedRequest.hours }} 小時</dd>
+              <dt class="col-sm-4">事由</dt>
+              <dd class="col-sm-8">{{ selectedRequest.reason || '-' }}</dd>
+              <dt class="col-sm-4">狀態</dt>
+              <dd class="col-sm-8">
+                <span [class]="getStatusBadgeClass(selectedRequest.status!)">{{ getStatusText(selectedRequest.status!) }}</span>
+              </dd>
+              @if (selectedRequest.approverName) {
+                <dt class="col-sm-4">審核人</dt>
+                <dd class="col-sm-8">{{ selectedRequest.approverName }}</dd>
+                <dt class="col-sm-4">審核時間</dt>
+                <dd class="col-sm-8">{{ selectedRequest.approvedTime | date:'yyyy-MM-dd HH:mm' }}</dd>
+                @if (selectedRequest.approverComment) {
+                  <dt class="col-sm-4">審核意見</dt>
+                  <dd class="col-sm-8">{{ selectedRequest.approverComment }}</dd>
+                }
+              }
+            </dl>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">關閉</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+  }
+</abp-page>

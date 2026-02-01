@@ -1,0 +1,162 @@
+<abp-page [title]="'人資管理 / 員工管理'">
+  <abp-page-toolbar-container>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="fa fa-plus me-1"></i> 新增員工
+    </button>
+  </abp-page-toolbar-container>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <input type="text" class="form-control" placeholder="搜尋..." [(ngModel)]="filter" (input)="loadEmployees()" />
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="loadEmployees()">
+            <option [ngValue]="null">全部狀態</option>
+            <option [ngValue]="EmployeeStatus.Active">在職</option>
+            <option [ngValue]="EmployeeStatus.Resigned">離職</option>
+            <option [ngValue]="EmployeeStatus.OnLeave">留停</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>員工編號</th>
+            <th>姓名</th>
+            <th>部門</th>
+            <th>職位</th>
+            <th>Email</th>
+            <th>到職日</th>
+            <th>狀態</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (employee of employees; track employee.id) {
+            <tr>
+              <td>{{ employee.employeeNo }}</td>
+              <td>{{ employee.name }}</td>
+              <td>{{ employee.departmentName }}</td>
+              <td>{{ employee.positionName }}</td>
+              <td>{{ employee.email || '-' }}</td>
+              <td>{{ employee.hireDate | date:'yyyy-MM-dd' }}</td>
+              <td>
+                <span [class]="getStatusBadgeClass(employee.status!)">
+                  {{ getStatusText(employee.status!) }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary me-1" (click)="openEditModal(employee)">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="delete(employee)">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  @if (isModalOpen) {
+    <div class="modal show d-block" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ selectedEmployee ? '編輯員工' : '新增員工' }}</h5>
+            <button type="button" class="btn-close" (click)="closeModal()"></button>
+          </div>
+          <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">員工編號 *</label>
+                  <input type="text" class="form-control" formControlName="employeeNo" [readonly]="!!selectedEmployee" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">姓名 *</label>
+                  <input type="text" class="form-control" formControlName="name" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">部門 *</label>
+                  <select class="form-select" formControlName="departmentId">
+                    <option [ngValue]="null" disabled>請選擇</option>
+                    @for (dept of departments; track dept.id) {
+                      <option [ngValue]="dept.id">{{ dept.name }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">職位 *</label>
+                  <select class="form-select" formControlName="positionId">
+                    <option [ngValue]="null" disabled>請選擇</option>
+                    @for (pos of positions; track pos.id) {
+                      <option [ngValue]="pos.id">{{ pos.name }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" formControlName="email" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">電話</label>
+                  <input type="text" class="form-control" formControlName="phone" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">性別 *</label>
+                  <select class="form-select" formControlName="gender">
+                    <option [ngValue]="Gender.Male">男</option>
+                    <option [ngValue]="Gender.Female">女</option>
+                    <option [ngValue]="Gender.Other">其他</option>
+                  </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">生日</label>
+                  <input type="date" class="form-control" formControlName="birthDate" />
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">到職日 *</label>
+                  <input type="date" class="form-control" formControlName="hireDate" />
+                </div>
+              </div>
+              @if (selectedEmployee) {
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">狀態</label>
+                    <select class="form-select" formControlName="status">
+                      <option [ngValue]="EmployeeStatus.Active">在職</option>
+                      <option [ngValue]="EmployeeStatus.Resigned">離職</option>
+                      <option [ngValue]="EmployeeStatus.OnLeave">留停</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">離職日</label>
+                    <input type="date" class="form-control" formControlName="terminationDate" />
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">取消</button>
+              <button type="submit" class="btn btn-primary" [disabled]="form.invalid">儲存</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+  }
+</abp-page>

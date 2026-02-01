@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <PreserveCompilationReferences>true</PreserveCompilationReferences>
+    <UserSecretsId>Yuu.Eip-4681b4fd-151f-4221-84a4-929d86723e4c</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yuu.Eip.Application\Yuu.Eip.Application.csproj" />
+    <ProjectReference Include="..\Yuu.Eip.EntityFrameworkCore\Yuu.Eip.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Yuu.Eip.HttpApi\Yuu.Eip.HttpApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="Volo">
+    <PackageReference Include="ModelContextProtocol.AspNetCore" />
+    <PackageReference Include="Volo.Abp.AspNetCore.MultiTenancy" />
+    <PackageReference Include="Volo.Abp.Autofac" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Serilog" />
+    <PackageReference Include="Volo.Abp.Swashbuckle" />
+    <PackageReference Include="Volo.Abp.Account.Web.OpenIddict" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite" />
+  </ItemGroup>
+
+  <ItemGroup Label="Serilog">
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Async" />
+    <PackageReference Include="Serilog.Exceptions" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu">
+    <PackageReference Include="Yuu.AspNetCore.Hosting" />
+    <PackageReference Include="Yuu.AspNetCore.Middleware" />
+    <PackageReference Include="Yuu.AspNetCore.Mvc" />
+    <PackageReference Include="Yuu.ClientInfo.Provider" />
+    <PackageReference Include="Yuu.Environment.Provider" />
+    <PackageReference Include="Yuu.Serilog.Seq" />
+  </ItemGroup>
+
+  <ItemGroup Label="Microsoft">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Logs\**" />
+    <Content Remove="Logs\**" />
+    <EmbeddedResource Remove="Logs\**" />
+    <None Remove="Logs\**" />
+  </ItemGroup>
+
+</Project>

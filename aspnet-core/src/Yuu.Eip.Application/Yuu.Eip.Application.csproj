@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yuu.Eip.Domain\Yuu.Eip.Domain.csproj" />
+    <ProjectReference Include="..\Yuu.Eip.Application.Contracts\Yuu.Eip.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Yuu.Eip.HttpApi.Client\Yuu.Eip.HttpApi.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="Volo">
+    <PackageReference Include="Volo.Abp.Account.Application" />
+    <PackageReference Include="Volo.Abp.Identity.Application" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application" />
+    <PackageReference Include="Volo.Abp.TenantManagement.Application" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Application" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Application" />
+  </ItemGroup>
+
+  <ItemGroup Label="Yuu">
+    <PackageReference Include="Yuu.ClientInfo.Provider.Abstractions" />
+    <PackageReference Include="Yuu.Environment.Provider.Abstractions" />
+  </ItemGroup>
+
+</Project>
