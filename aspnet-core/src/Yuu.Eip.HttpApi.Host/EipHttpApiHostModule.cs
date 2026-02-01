@@ -171,7 +171,7 @@ public class EipHttpApiHostModule : AbpModule
                 ValidAudience = "Eip",
             };
 
-            if (hostingEnvironment.IsProd())
+            if (!hostingEnvironment.IsLocal())
             {
                 options.RequireHttpsMetadata = true;
             }
@@ -311,7 +311,7 @@ public class EipHttpApiHostModule : AbpModule
                     options.HideAbpEndpoints();
                 }
 
-                var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "Dash.*.xml");
+                var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "Yuu.*.xml");
 
                 foreach (var xmlFile in xmlFiles)
                 {
@@ -347,7 +347,7 @@ public class EipHttpApiHostModule : AbpModule
 
         app.UseForwardedHeaders();
 
-        if (env.IsProd())
+        if (!env.IsLocal())
         {
             app.UseHttpsRedirection();
         }
