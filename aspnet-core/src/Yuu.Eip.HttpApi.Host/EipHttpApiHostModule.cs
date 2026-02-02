@@ -367,6 +367,18 @@ public class EipHttpApiHostModule : AbpModule
 
         app.MapAbpStaticAssets();
         app.UseRouting();
+
+        /* ✅ Health check 一定要在這裡 */
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapGet("/health", async context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status200OK;
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync("OK");
+            });
+        });
+
         app.UseCors();
 
         app.UseAuthentication();
