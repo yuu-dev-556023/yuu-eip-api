@@ -21,6 +21,8 @@ dotnet run --project src/Yuu.Eip.HttpApi.Host       # Run API host
 # Testing
 dotnet test                                         # Run all tests
 dotnet test test/Yuu.Eip.Application.Tests          # Run specific test project
+dotnet test --filter "FullyQualifiedName~EmployeeAppServiceTests"  # Run specific test class
+dotnet test --filter "FullyQualifiedName~TestClassName.TestMethodName"  # Run single test
 
 # Database migrations
 dotnet ef migrations add <Name> -p src/Yuu.Eip.EntityFrameworkCore -s src/Yuu.Eip.HttpApi.Host
@@ -36,9 +38,12 @@ abp install-libs                                    # Install client-side librar
 npm install                    # Install dependencies
 npm start                      # Dev server at http://localhost:4200
 npm run build:prod             # Production build
-npm test                       # Run Karma/Jasmine tests
+npm test                       # Run Karma/Jasmine tests (watch mode)
+npm run test -- --watch=false  # Run tests without watch (CI mode)
+npm run test -- --include="**/component-name.spec.ts"  # Run specific test file
 npm run lint                   # ESLint check
 npm run ng -- generate component <name>   # Generate Angular component
+npm run ng -- generate service <name>     # Generate Angular service
 ```
 
 ### Docker
@@ -68,7 +73,27 @@ docker build -t yuu-eip -f aspnet-core/Dockerfile aspnet-core/
 - `app.routes.ts` - Routing configuration
 - `route.provider.ts` - Dynamic route registration
 - `home/` - Home module
+- `human-resources/` - HR modules (employees, departments, positions)
+- `proxy/` - Generated API proxy services
 - `shared/` - Shared components and services
+
+## Code Style
+
+### C# Naming
+- **Classes/Methods/Properties**: PascalCase (`EmployeeAppService`, `GetAsync`)
+- **Private fields**: _camelCase (`_employeeRepository`)
+- **Interfaces**: `I` prefix (`IEmployeeAppService`)
+- Async methods end with `Async`
+
+### TypeScript Naming
+- **Components**: PascalCase + `Component` suffix (`EmployeeListComponent`)
+- **Services**: PascalCase + `Service` suffix (`EmployeeService`)
+- **Methods/Properties**: camelCase (`getEmployees`, `employeeId`)
+- Use single quotes, standalone components (Angular 20+)
+
+### Testing Conventions
+- **Backend test naming**: `[MethodName]_[Scenario]_[ExpectedResult]`
+- **Frontend test files**: `*.spec.ts` alongside components
 
 ## Key Configuration
 
@@ -76,6 +101,7 @@ docker build -t yuu-eip -f aspnet-core/Dockerfile aspnet-core/
 - **Package versions:** `aspnet-core/Directory.Packages.props` (centralized management)
 - **NuGet sources:** `aspnet-core/NuGet.Config` (includes GitHub Packages for Yuu.* packages)
 - **Angular config:** `angular/angular.json`
+- **Code formatting:** `.editorconfig` (4 spaces for C#, 2 spaces for TS/JS/HTML/SCSS)
 
 ## Custom Dependencies
 
@@ -89,12 +115,17 @@ Docker builds require `NUGET_GITHUB_TOKEN` secret for authentication.
 ## CI/CD
 
 - **GitHub Actions** (`.github/workflows/docker-build-push.yml`): Builds and pushes to Docker Hub on `stag` branch or version tags
-- **Azure Pipelines** (`.azure/pipelines/azure-pipelines.yml`): Builds and pushes to GitHub Packages
 
 ## Testing
 
 - **Backend:** xUnit + NSubstitute + Shouldly + SQLite (for EF Core tests)
 - **Frontend:** Karma + Jasmine
+
+## Commit Style
+
+Use Conventional Commits: `type: short description`
+- Prefixes: `fix:`, `feat:`, `chore:`, `ci:`, `docs:`, `refactor:`
+- Include UI screenshots for Angular changes in PRs
 
 ## Notes
 
@@ -102,3 +133,4 @@ Docker builds require `NUGET_GITHUB_TOKEN` secret for authentication.
 - OpenIddict requires `openiddict.pfx` certificate for OAuth2 operations
 - Custom `IPWhitelistMiddleware` is used for API security
 - Uses custom build image `ghcr.io/yy556023/abp-sdk:10.0` in Docker builds
+- Local secrets: `appsettings.local-dev.json`, `appsettings.secrets.json` (not committed)

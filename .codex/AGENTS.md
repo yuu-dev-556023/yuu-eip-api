@@ -1,36 +1,39 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `angular/` holds the Angular client (routes, components, and ABP Angular proxies). Main app code is in `angular/src/app`, assets in `angular/src/assets`, and environment settings in `angular/src/environments`.
-- `aspnet-core/` contains the ABP-based backend. Core layers live under `aspnet-core/src/` (Domain, Application, EntityFrameworkCore, HttpApi, HttpApi.Host), while tests are under `aspnet-core/test/`.
-- Database migrations are in `aspnet-core/src/Yuu.Eip.EntityFrameworkCore/Migrations`.
+This repo is a layered ABP Framework solution with a separate Angular app:
+- `aspnet-core/src/` contains the backend layers (Domain, Application, EF Core, HttpApi, Host).
+- `aspnet-core/test/` contains backend test projects.
+- `angular/src/app/` contains the frontend modules and shared UI.
+- `.github/workflows/` holds CI workflows.
 
 ## Build, Test, and Development Commands
-Frontend (run from `angular/`):
-- `yarn install` (or `npm install`) installs dependencies.
-- `yarn start` runs `ng serve --open` at `http://localhost:4200/`.
-- `yarn build` or `yarn build:prod` builds the SPA.
-- `yarn test` runs Karma/Jasmine unit tests.
-
-Backend (run from `aspnet-core/`):
-- `dotnet build` builds all projects.
-- `dotnet run --project src/Yuu.Eip.HttpApi.Host/Yuu.Eip.HttpApi.Host.csproj` runs the API host.
-- `dotnet run --project src/Yuu.Eip.DbMigrator/Yuu.Eip.DbMigrator.csproj` applies migrations and seeds data.
-- `dotnet test Yuu.Eip.slnx` runs the test suite.
+Run commands from the repo root unless noted:
+- `dotnet run --project aspnet-core/src/Yuu.Eip.DbMigrator` initializes/updates the PostgreSQL database.
+- `dotnet run --project aspnet-core/src/Yuu.Eip.HttpApi.Host` starts the API (default `https://localhost:44319`).
+- `dotnet build` builds the backend solution.
+- `dotnet test` runs all backend tests under `aspnet-core/test/`.
+- `dotnet ef migrations add <Name> -p aspnet-core/src/Yuu.Eip.EntityFrameworkCore -s aspnet-core/src/Yuu.Eip.HttpApi.Host` adds a migration.
+- `npm install` then `npm start` in `angular/` starts the Angular dev server (`http://localhost:4200`).
+- `npm run build:prod`, `npm test`, `npm run lint` in `angular/` build, test, and lint the frontend.
 
 ## Coding Style & Naming Conventions
-- Formatting is enforced via `.editorconfig` in both roots. Indent with 2 spaces for TS/JS/JSON/HTML/SCSS, 4 spaces for C#.
-- C# naming rules: interfaces start with `I`, types/members use PascalCase, private fields use `_camelCase`, and async methods end with `Async`.
-- TypeScript uses single quotes.
+- Formatting is driven by `.editorconfig` files in `aspnet-core/` and `angular/`.
+- C# uses 4-space indentation; JSON/TS/HTML/CSS use 2 spaces.
+- C# naming: interfaces start with `I`, types/members are PascalCase, private fields use `_camelCase`, async methods end with `Async`.
+- TypeScript prefers single quotes.
 
 ## Testing Guidelines
-- Backend tests use xUnit with Shouldly/NSubstitute; keep tests under `aspnet-core/test/` and follow existing naming (`*.Tests`).
-- Frontend specs are `*.spec.ts` under `angular/src/app/` and run via Karma.
+- Backend tests are xUnit-based (see `aspnet-core/test/`), run via `dotnet test`.
+- Frontend unit tests run with Karma via `npm test` in `angular/`.
+- No explicit coverage thresholds are configured; include tests for new business logic or API behavior.
 
 ## Commit & Pull Request Guidelines
-- Recent history uses Conventional Commit style prefixes like `chore:` and `ci:`; prefer `type: short description`.
-- Keep commits focused; include a clear PR summary, test results, and link related issues. Add UI screenshots for Angular changes.
+- Recent history follows Conventional Commits (e.g., `fix: ...`, `chore: ...`). Keep the same `type: subject` format.
+- PRs should include a short summary, linked issue (if any), and testing notes (e.g., `dotnet test`, `npm test`).
+- Call out configuration or migration changes explicitly in the PR description.
 
-## Security & Configuration Tips
-- Local settings live in `appsettings.local-dev.json` and `appsettings.secrets.json`; avoid committing real secrets.
-- If OpenIddict certificates change, ensure `openiddict.pfx` aligns with deployment needs.
+## Configuration & Security Notes
+- Backend settings live in `aspnet-core/src/Yuu.Eip.HttpApi.Host/appsettings*.json`.
+- Frontend environment settings are in `angular/src/environments/`.
+- OpenIddict signing cert guidance lives in `aspnet-core/README.md`; avoid committing secrets.
